@@ -1,5 +1,5 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.Optional where
 
@@ -11,8 +11,8 @@ import qualified Prelude as P
 -- | The `Optional` data type contains 0 or 1 value.
 --
 -- It might be thought of as a list, with a maximum length of one.
-data Optional a =
-  Full a
+data Optional a
+  = Full a
   | Empty
   deriving (Eq, Show)
 
@@ -24,9 +24,9 @@ data Optional a =
 -- >>> mapOptional (+1) (Full 8)
 -- Full 9
 mapOptional ::
-  (a -> b)
-  -> Optional a
-  -> Optional b
+  (a -> b) ->
+  Optional a ->
+  Optional b
 mapOptional =
   error "todo: Course.Optional#mapOptional"
 
@@ -41,9 +41,9 @@ mapOptional =
 -- >>> bindOptional (\n -> if even n then Full (n - 1) else Full (n + 1)) (Full 9)
 -- Full 10
 bindOptional ::
-  (a -> Optional b)
-  -> Optional a
-  -> Optional b
+  (a -> Optional b) ->
+  Optional a ->
+  Optional b
 bindOptional =
   error "todo: Course.Optional#bindOptional"
 
@@ -55,9 +55,9 @@ bindOptional =
 -- >>> Empty ?? 99
 -- 99
 (??) ::
-  Optional a
-  -> a
-  -> a
+  Optional a ->
+  a ->
+  a
 (??) =
   error "todo: Course.Optional#(??)"
 
@@ -76,9 +76,9 @@ bindOptional =
 -- >>> Empty <+> Empty
 -- Empty
 (<+>) ::
+  Optional a ->
+  Optional a ->
   Optional a
-  -> Optional a
-  -> Optional a
 (<+>) =
   error "todo: Course.Optional#(<+>)"
 
@@ -90,10 +90,10 @@ bindOptional =
 -- >>> optional (+1) 0 Empty
 -- 0
 optional ::
-  (a -> b)
-  -> b
-  -> Optional a
-  -> b
+  (a -> b) ->
+  b ->
+  Optional a ->
+  b
 optional =
   error "todo: Course.Optional#optional"
 

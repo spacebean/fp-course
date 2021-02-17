@@ -1,12 +1,12 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.Anagrams where
 
 import Course.Core
-import Course.List
 import Course.Functor
+import Course.List
 
 {-
 
@@ -25,20 +25,19 @@ Functions that might help
 
 -}
 
-
 -- Return all anagrams of the given string
 -- that appear in the given dictionary file.
 anagrams ::
-  Chars
-  -> FilePath
-  -> IO (List Chars)
+  Chars ->
+  FilePath ->
+  IO (List Chars)
 anagrams =
   error "todo: Course.Anagrams#anagrams"
 
 -- Compare two strings for equality, ignoring case
 equalIgnoringCase ::
-  Chars
-  -> Chars
-  -> Bool
+  Chars ->
+  Chars ->
+  Bool
 equalIgnoringCase =
   error "todo: Course.Anagrams#equalIgnoringCase"

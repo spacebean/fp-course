@@ -1,7 +1,7 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.Alternative where
 
@@ -11,7 +11,7 @@ import Course.Functor
 import Course.List
 import Course.Optional
 import Course.Parser
-import qualified Prelude as P(fmap, return, (>>=))
+import qualified Prelude as P (fmap, return, (>>=))
 
 -- | All instances of the `Alternative` type-class must satisfy three laws.
 -- These laws are not checked by the compiler. These laws are given as:
@@ -40,9 +40,9 @@ class Applicative k => Alternative k where
   zero ::
     k a
   (<|>) ::
+    k a ->
+    k a ->
     k a
-    -> k a
-    -> k a
 
 infixl 3 <|>
 
@@ -62,9 +62,9 @@ instance Alternative Optional where
   zero =
     error "todo: Course.Alternative zero#instance Optional"
   (<|>) ::
+    Optional a ->
+    Optional a ->
     Optional a
-    -> Optional a
-    -> Optional a
   (<|>) =
     error "todo: Course.Alternative (<|>)#instance Optional"
 
@@ -86,9 +86,9 @@ instance Alternative List where
   zero =
     error "todo: Course.Alternative zero#instance List"
   (<|>) ::
+    List a ->
+    List a ->
     List a
-    -> List a
-    -> List a
   (<|>) =
     error "todo: Course.Alternative (<|>)#instance List"
 
@@ -113,9 +113,9 @@ instance Alternative Parser where
   zero =
     error "todo: Course.Alternative zero#instance Parser"
   (<|>) ::
+    Parser a ->
+    Parser a ->
     Parser a
-    -> Parser a
-    -> Parser a
   (<|>) =
     error "todo: Course.Alternative (<|>)#instance Parser"
 

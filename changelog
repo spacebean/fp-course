@@ -10,4 +10,3 @@ Switch around the the hex parser exercise. There are now two exercises:
 2. Implement `hexu`, which is the complete exercise of what was formerly `hex`.
 
 This switching is required to implement `jsonString` parser properly (without a try-parser).
-

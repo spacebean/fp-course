@@ -1,17 +1,17 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.MoreParser where
 
-import Course.Core
-import Course.Parser
-import Course.List
-import Course.Optional
 import Course.Applicative
-import Course.Monad
+import Course.Core
 import Course.Functor
+import Course.List
+import Course.Monad
+import Course.Optional
+import Course.Parser
 import Course.Traversable
 import Numeric hiding (readHex)
 
@@ -23,13 +23,13 @@ import Numeric hiding (readHex)
 -- | Parses the given input and returns the result.
 -- The remaining input is ignored.
 (<.>) ::
-  Parser a
-  -> Input
-  -> Optional a
+  Parser a ->
+  Input ->
+  Optional a
 P p <.> i =
   case p i of
     Result _ a -> Full a
-    _          -> Empty
+    _ -> Empty
 
 -- | Write a parser that will parse zero or more spaces.
 --
@@ -54,8 +54,8 @@ spaces =
 -- >>> parse (tok (is 'a')) "abc"
 -- Result >bc< 'a'
 tok ::
+  Parser a ->
   Parser a
-  -> Parser a
 tok =
   error "todo: Course.MoreParser#tok"
 
@@ -69,8 +69,8 @@ tok =
 --
 -- /Tip:/ Use `tok` and `is`.
 charTok ::
-  Char
-  -> Parser Char
+  Char ->
+  Parser Char
 charTok =
   error "todo: Course.MoreParser#charTok"
 
@@ -115,8 +115,8 @@ quote =
 -- >>> isErrorResult (parse (string "abc") "bcdef")
 -- True
 string ::
-  Chars
-  -> Parser Chars
+  Chars ->
+  Parser Chars
 string =
   error "todo: Course.MoreParser#string"
 
@@ -130,8 +130,8 @@ string =
 -- >>> isErrorResult (parse (stringTok "abc") "bc  ")
 -- True
 stringTok ::
-  Chars
-  -> Parser Chars
+  Chars ->
+  Parser Chars
 stringTok =
   error "todo: Course.MoreParser#stringTok"
 
@@ -145,9 +145,9 @@ stringTok =
 -- >>> parse (option 'x' character) ""
 -- Result >< 'x'
 option ::
-  a
-  -> Parser a
-  -> Parser a
+  a ->
+  Parser a ->
+  Parser a
 option =
   error "todo: Course.MoreParser#option"
 
@@ -175,8 +175,8 @@ digits1 =
 -- >>> isErrorResult (parse (oneof "abc") "def")
 -- True
 oneof ::
-  Chars
-  -> Parser Char
+  Chars ->
+  Parser Char
 oneof =
   error "todo: Course.MoreParser#oneof"
 
@@ -190,8 +190,8 @@ oneof =
 -- >>> isErrorResult (parse (noneof "abcd") "abc")
 -- True
 noneof ::
-  Chars
-  -> Parser Char
+  Chars ->
+  Parser Char
 noneof =
   error "todo: Course.MoreParser#noneof"
 
@@ -212,10 +212,10 @@ noneof =
 -- >>> isErrorResult (parse (between (is '[') (is ']') character) "abc]")
 -- True
 between ::
-  Parser o
-  -> Parser c
-  -> Parser a
-  -> Parser a
+  Parser o ->
+  Parser c ->
+  Parser a ->
+  Parser a
 between =
   error "todo: Course.MoreParser#between"
 
@@ -235,10 +235,10 @@ between =
 -- >>> isErrorResult (parse (betweenCharTok '[' ']' character) "abc]")
 -- True
 betweenCharTok ::
-  Char
-  -> Char
-  -> Parser a
-  -> Parser a
+  Char ->
+  Char ->
+  Parser a ->
+  Parser a
 betweenCharTok =
   error "todo: Course.MoreParser#betweenCharTok"
 
@@ -302,9 +302,9 @@ hexu =
 -- >>> isErrorResult (parse (sepby1 character (is ',')) "")
 -- True
 sepby1 ::
-  Parser a
-  -> Parser s
-  -> Parser (List a)
+  Parser a ->
+  Parser s ->
+  Parser (List a)
 sepby1 =
   error "todo: Course.MoreParser#sepby1"
 
@@ -325,9 +325,9 @@ sepby1 =
 -- >>> parse (sepby character (is ',')) "a,b,c,,def"
 -- Result >def< "abc,"
 sepby ::
-  Parser a
-  -> Parser s
-  -> Parser (List a)
+  Parser a ->
+  Parser s ->
+  Parser (List a)
 sepby =
   error "todo: Course.MoreParser#sepby"
 
@@ -362,8 +362,8 @@ eof =
 -- >>> isErrorResult (parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "abc")
 -- True
 satisfyAll ::
-  List (Char -> Bool)
-  -> Parser Char
+  List (Char -> Bool) ->
+  Parser Char
 satisfyAll =
   error "todo: Course.MoreParser#satisfyAll"
 
@@ -383,8 +383,8 @@ satisfyAll =
 -- >>> isErrorResult (parse (satisfyAny (isLower :. (/= 'X') :. Nil)) "")
 -- True
 satisfyAny ::
-  List (Char -> Bool)
-  -> Parser Char
+  List (Char -> Bool) ->
+  Parser Char
 satisfyAny =
   error "todo: Course.MoreParser#satisfyAny"
 
@@ -419,9 +419,9 @@ satisfyAny =
 -- >>> isErrorResult (parse (betweenSepbyComma '[' ']' lower) "a]")
 -- True
 betweenSepbyComma ::
-  Char
-  -> Char
-  -> Parser a
-  -> Parser (List a)
+  Char ->
+  Char ->
+  Parser a ->
+  Parser (List a)
 betweenSepbyComma =
   error "todo: Course.MoreParser#betweenSepbyComma"

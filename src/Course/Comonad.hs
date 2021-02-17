@@ -1,6 +1,6 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.Comonad where
 
@@ -18,8 +18,8 @@ import Course.Extend
 --   `∀f. copure . (f <<=) == f
 class Extend k => Comonad k where
   copure ::
-    k a
-    -> a
+    k a ->
+    a
 
 -- | Implement the @Comonad@ instance for @ExactlyOne@.
 --
@@ -27,8 +27,8 @@ class Extend k => Comonad k where
 -- 7
 instance Comonad ExactlyOne where
   copure ::
-    ExactlyOne a
-    -> a
+    ExactlyOne a ->
+    a
   copure =
     error "todo: Course.Comonad copure#instance ExactlyOne"
 
@@ -38,8 +38,8 @@ instance Comonad ExactlyOne where
 -- ExactlyOne 17
 (<$$>) ::
   Comonad k =>
-  (a -> b)
-  -> k a
-  -> k b
+  (a -> b) ->
+  k a ->
+  k b
 (<$$>) =
   error "todo: Course.Comonad#(<$>)"
