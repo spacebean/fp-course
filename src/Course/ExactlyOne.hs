@@ -8,13 +8,13 @@ import qualified Control.Monad as M
 import Course.Core
 import qualified Prelude as P
 
-data ExactlyOne a = ExactlyOne a deriving (Eq, Show)
+newtype ExactlyOne a = ExactlyOne a deriving (Eq, Show)
 
 runExactlyOne :: ExactlyOne a -> a
 runExactlyOne (ExactlyOne a) = a
 
 mapExactlyOne :: (a -> b) -> ExactlyOne a -> ExactlyOne b
-mapExactlyOne f (ExactlyOne a)    = ExactlyOne (f a)
+mapExactlyOne f (ExactlyOne a) = ExactlyOne (f a)
 
 bindExactlyOne :: (a -> ExactlyOne b) -> ExactlyOne a -> ExactlyOne b
 bindExactlyOne f (ExactlyOne a) = f a
