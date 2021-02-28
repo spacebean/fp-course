@@ -25,7 +25,8 @@ import qualified Prelude as P
 -- >>> import Test.QuickCheck
 -- >>> import Course.Core(even, id, const)
 -- >>> import qualified Prelude as P(fmap, foldr)
--- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap ((P.foldr (:.) Nil) :: ([a] -> List a)) arbitrary
+-- >>> instance Arbitrary a => Arbitrary (List a)
+-- where arbitrary = P.fmap ((P.foldr (:.) Nil) :: ([a] -> List a)) arbitrary
 
 -- BEGIN Helper functions and data types
 
@@ -74,8 +75,10 @@ headOr ::
   a ->
   List a ->
   a
-headOr =
-  error "todo: Course.List#headOr"
+headOr _ (h :. _) =
+  h
+headOr a _ =
+  a
 
 -- | The product of the elements of a list.
 --
@@ -90,8 +93,10 @@ headOr =
 product ::
   List Int ->
   Int
-product =
-  error "todo: Course.List#product"
+product (h :. t) =
+  h * product t
+product _ =
+  1
 
 -- | Sum the elements of the list.
 --
@@ -105,8 +110,10 @@ product =
 sum ::
   List Int ->
   Int
-sum =
-  error "todo: Course.List#sum"
+sum (h :. t) =
+  h + sum t
+sum _ =
+  0
 
 -- | Return the length of the list.
 --
@@ -117,8 +124,10 @@ sum =
 length ::
   List a ->
   Int
-length =
-  error "todo: Course.List#length"
+length (_ :. t) =
+  1 + length t
+length _ =
+  0
 
 -- | Map the given function on each element of the list.
 --
@@ -132,8 +141,10 @@ map ::
   (a -> b) ->
   List a ->
   List b
-map =
-  error "todo: Course.List#map"
+map f (h :. t) =
+  f h :. map f t
+map _ _ =
+  Nil
 
 -- | Return elements satisfying the given predicate.
 --
@@ -149,8 +160,10 @@ filter ::
   (a -> Bool) ->
   List a ->
   List a
-filter =
-  error "todo: Course.List#filter"
+filter f (h :. t) =
+  if f h then h :. filter f t else filter f t
+filter _ _ =
+  Nil
 
 -- | Append two lists to a new list.
 --
@@ -168,8 +181,12 @@ filter =
   List a ->
   List a ->
   List a
-(++) =
-  error "todo: Course.List#(++)"
+Nil ++ rs =
+  rs
+ls ++ Nil =
+  ls
+(hl :. tl) ++ rs =
+  hl :. tl ++ rs
 
 infixr 5 ++
 
@@ -187,7 +204,7 @@ flatten ::
   List (List a) ->
   List a
 flatten =
-  error "todo: Course.List#flatten"
+  foldLeft (++) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -203,8 +220,8 @@ flatMap ::
   (a -> List b) ->
   List a ->
   List b
-flatMap =
-  error "todo: Course.List#flatMap"
+flatMap f as =
+  flatten (map f as)
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -214,7 +231,7 @@ flattenAgain ::
   List (List a) ->
   List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap P.id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -242,7 +259,12 @@ seqOptional ::
   List (Optional a) ->
   Optional (List a)
 seqOptional =
-  error "todo: Course.List#seqOptional"
+  foldRight
+    ( \oa oas -> case (oa, oas) of
+        (Full a, Full as) -> Full (a :. as)
+        _ -> Empty
+    )
+    (Full Nil)
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -264,8 +286,10 @@ find ::
   (a -> Bool) ->
   List a ->
   Optional a
-find =
-  error "todo: Course.List#find"
+find f (h :. t) =
+  if f h then Full h else find f t
+find _ _ =
+  Empty
 
 -- | Determine if the length of the given list is greater than 4.
 --
@@ -283,8 +307,8 @@ find =
 lengthGT4 ::
   List a ->
   Bool
-lengthGT4 =
-  error "todo: Course.List#lengthGT4"
+lengthGT4 as =
+  length (take 5 as) == 5
 
 -- | Reverse a list.
 --
@@ -301,7 +325,7 @@ reverse ::
   List a ->
   List a
 reverse =
-  error "todo: Course.List#reverse"
+  foldLeft (flip (:.)) Nil
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
@@ -330,7 +354,7 @@ notReverse ::
   List a ->
   List a
 notReverse =
-  error "todo: Is it even possible?"
+  reverse
 
 ---- End of list exercises
 
