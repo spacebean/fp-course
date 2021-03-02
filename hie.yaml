@@ -2,3 +2,6 @@ cradle:
   cabal:
     - path: "./src"
       component: "lib:fp-course"
+    - path: "./out/production/fp-course"
+      component: "lib:fp-course"
+ 
