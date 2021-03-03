@@ -16,8 +16,8 @@ fastAnagrams ::
   Chars ->
   FilePath ->
   IO (List Chars)
-fastAnagrams =
-  error "todo: Course.FastAnagrams#fastAnagrams"
+fastAnagrams cs fp =
+  (\str -> let s = S.fromList (hlist (lines str)) in filter (`S.member` s) (permutations cs)) <$> readFile fp
 
 newtype NoCaseString = NoCaseString
   { ncString :: Chars
