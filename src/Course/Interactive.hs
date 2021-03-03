@@ -65,8 +65,7 @@ echo =
         )
     )
 
-data Op
-  = Op Char Chars (IO ()) -- keyboard entry, description, program
+data Op = Op Char Chars (IO ()) -- keyboard entry, description, program
 
 -- |
 --
@@ -86,7 +85,10 @@ data Op
 convertInteractive ::
   IO ()
 convertInteractive =
-  error "todo: Course.Interactive#convertInteractive"
+  putStrLn "Enter a string to convert to upper-case: "
+    >> getLine >>= \cs ->
+      putStrLn (toUpper <$> cs)
+        >> putStr "Done!"
 
 -- |
 --
@@ -114,7 +116,13 @@ convertInteractive =
 reverseInteractive ::
   IO ()
 reverseInteractive =
-  error "todo: Course.Interactive#reverseInteractive"
+  putStrLn "Enter a file name to reverse: "
+    >> getLine >>= \i ->
+      putStrLn "Enter a file name to write the reversed file to: "
+        >> getLine >>= \o ->
+          readFile i >>= \cs ->
+            writeFile o (reverse cs)
+              >> putStr "Done!"
 
 -- |
 --
@@ -140,7 +148,16 @@ reverseInteractive =
 encodeInteractive ::
   IO ()
 encodeInteractive =
-  error "todo: Course.Interactive#encodeInteractive"
+  putStrLn "Enter a string to url-encode: "
+    >> getLine >>= \cs ->
+      putStrLn
+        ( case cs of
+            " " -> "%20"
+            "\t" -> "%09"
+            "\"" -> "%22"
+            x -> x
+        )
+        >> putStr "Done!"
 
 interactive ::
   IO ()
