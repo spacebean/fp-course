@@ -247,9 +247,9 @@ seqOptional as =
   foldRight
     ( \x xs -> case xs of
         Empty -> Empty
-        Full as -> case x of
+        Full t -> case x of
           Empty -> Empty
-          Full a -> Full (a :. as)
+          Full a -> Full (a :. t)
     )
     (Full Nil)
     as

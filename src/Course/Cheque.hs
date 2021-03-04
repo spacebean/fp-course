@@ -248,6 +248,115 @@ fromChar '9' =
 fromChar _ =
   Empty
 
+digitToDigit3 ::
+  List Digit ->
+  List Digit3
+digitToDigit3 (d1 :. Nil) =
+  D1 d1 :. Nil
+digitToDigit3 (d2 :. (d1 :. Nil)) =
+  D2 d1 d2 :. Nil
+digitToDigit3 (d3 :. (d2 :. (d1 :. Nil))) =
+  D3 d1 d2 d3 :. Nil
+digitToDigit3 (d3 :. (d2 :. (d1 :. t))) =
+  D3 d1 d2 d3 :. digitToDigit3 t
+digitToDigit3 _ =
+  Nil
+
+digit3ToChars ::
+  List Digit3 ->
+  List Chars
+digit3ToChars (d :. t) =
+  case d of
+    D1 d1 -> showDigit d1 :. digit3ToChars t
+    D2 d2 d1 -> case d2 of
+      Zero -> showDigit d1 :. digit3ToChars t
+      One -> case d1 of
+        Zero -> "ten" :. digit3ToChars t
+        One -> "eleven" :. digit3ToChars t
+        Two -> "twelve" :. digit3ToChars t
+        Three -> "thirteen" :. digit3ToChars t
+        Four -> "fourteen" :. digit3ToChars t
+        Five -> "fifteen" :. digit3ToChars t
+        Six -> "sixteen" :. digit3ToChars t
+        Seven -> "seventeen" :. digit3ToChars t
+        Eight -> "eighteen" :. digit3ToChars t
+        Nine -> "nineteen" :. digit3ToChars t
+      Two -> case d1 of
+        Zero -> "twenty" :. digit3ToChars t
+        _ -> ("twenty-" ++ showDigit d1) :. digit3ToChars t
+      Three -> case d1 of
+        Zero -> "thirty" :. digit3ToChars t
+        _ -> ("thirty-" ++ showDigit d1) :. digit3ToChars t
+      Four -> case d1 of
+        Zero -> "forty" :. digit3ToChars t
+        _ -> ("forty-" ++ showDigit d1) :. digit3ToChars t
+      Five -> case d1 of
+        Zero -> "fifty" :. digit3ToChars t
+        _ -> ("fifty-" ++ showDigit d1) :. digit3ToChars t
+      Six -> case d1 of
+        Zero -> "sixty" :. digit3ToChars t
+        _ -> ("sixty-" ++ showDigit d1) :. digit3ToChars t
+      Seven -> case d1 of
+        Zero -> "seventy" :. digit3ToChars t
+        _ -> ("seventy-" ++ showDigit d1) :. digit3ToChars t
+      Eight -> case d1 of
+        Zero -> "eighty" :. digit3ToChars t
+        _ -> ("eighty-" ++ showDigit d1) :. digit3ToChars t
+      Nine -> case d1 of
+        Zero -> "ninety" :. digit3ToChars t
+        _ -> ("ninety-" ++ showDigit d1) :. digit3ToChars t
+    D3 d3 d2 d1 -> case (d3, d2, d1) of
+      (Zero, Zero, Zero) -> "" :. digit3ToChars t
+      (Zero, Zero, _) -> flatten (digit3ToChars (D1 d1 :. Nil)) :. digit3ToChars t
+      (Zero, _, _) -> flatten (digit3ToChars (D2 d2 d1 :. Nil)) :. digit3ToChars t
+      (d3', Zero, Zero) -> (showDigit d3' ++ " hundred") :. digit3ToChars t
+      _ -> (showDigit d3 ++ " hundred and " ++ flatten (digit3ToChars (D2 d2 d1 :. Nil))) :. digit3ToChars t
+digit3ToChars _ =
+  Nil
+
+digit3ToChar ::
+  Digit3 ->
+  Chars
+digit3ToChar d3 =
+  flatten (digit3ToChars (d3 :. Nil))
+
+charsToDigits ::
+  Chars ->
+  List Digit
+charsToDigits (c :. cs) =
+  case fromChar c of
+    Full d -> d :. charsToDigits cs
+    _ -> charsToDigits cs
+charsToDigits _ =
+  Nil
+
+split ::
+  Chars ->
+  (Chars, Chars)
+split =
+  break (== '.')
+
+cents ::
+  Chars ->
+  Optional Digit3
+cents cs =
+  let takeCents ::
+        Chars ->
+        Int ->
+        List Digit
+      takeCents (h :. t) n =
+        if n == 0
+          then Nil
+          else case fromChar h of
+            Full d -> d :. takeCents t (n - 1)
+            _ -> takeCents t n
+      takeCents _ _ =
+        Nil
+   in case digitToDigit3 (reverse (takeCents cs 2)) of
+        (D1 d1 :. _) -> Full (D2 d1 Zero)
+        (d3 :. _) -> Full d3
+        _ -> Empty
+
 -- | Take a numeric value and produce its English output.
 --
 -- >>> dollars "0"
@@ -320,9 +429,57 @@ fromChar _ =
 -- "twelve thousand three hundred and forty-five dollars and sixty-seven cents"
 --
 -- >>> dollars "456789123456789012345678901234567890123456789012345678901234567890.12"
--- "four hundred and fifty-six vigintillion seven hundred and eighty-nine novemdecillion one hundred and twenty-three octodecillion four hundred and fifty-six septendecillion seven hundred and eighty-nine sexdecillion twelve quindecillion three hundred and forty-five quattuordecillion six hundred and seventy-eight tredecillion nine hundred and one duodecillion two hundred and thirty-four undecillion five hundred and sixty-seven decillion eight hundred and ninety nonillion one hundred and twenty-three octillion four hundred and fifty-six septillion seven hundred and eighty-nine sextillion twelve quintillion three hundred and forty-five quadrillion six hundred and seventy-eight trillion nine hundred and one billion two hundred and thirty-four million five hundred and sixty-seven thousand eight hundred and ninety dollars and twelve cents"
+-- "four hundred and fifty-six vigintillion seven hundred and eighty-nine novemdecillion one hundred
+-- and twenty-three octodecillion four hundred and fifty-six septendecillion seven hundred
+-- and eighty-nine sexdecillion twelve quindecillion three hundred and forty-five quattuordecillion six hundred
+-- and seventy-eight tredecillion nine hundred and one duodecillion two hundred and thirty-four undecillion five hundred
+-- and sixty-seven decillion eight hundred and ninety nonillion one hundred and twenty-three octillion four hundred
+-- and fifty-six septillion seven hundred and eighty-nine sextillion twelve quintillion three hundred
+-- and forty-five quadrillion six hundred and seventy-eight trillion nine hundred and one billion two hundred
+-- and thirty-four million five hundred and sixty-seven thousand eight hundred and ninety dollars and twelve cents"
 dollars ::
   Chars ->
   Chars
-dollars =
-  error "todo: Course.Cheque#dollars"
+dollars cs =
+  let dc = split cs
+   in case (digit3ToChars (digitToDigit3 (reverse (charsToDigits (fst dc)))), cents (snd dc)) of
+        (Nil, Empty) -> "zero dollars and zero cents"
+        (Nil, Full (D1 One)) -> "zero dollars and one cent"
+        (Nil, Full (D2 Zero One)) -> "zero dollars and one cent"
+        (Nil, Full c) -> "zero dollars and " ++ digit3ToChar c ++ " cents"
+        ("one" :. Nil, Full (D1 One)) -> "one dollar and one cent"
+        ("one" :. Nil, Full (D2 Zero One)) -> "one dollar and one cent"
+        ("one" :. Nil, Empty) -> "one dollar and zero cents"
+        ("one" :. Nil, Full c) -> "one dollar and " ++ digit3ToChar c ++ " cents"
+        (h :. Nil, Empty) -> h ++ " dollars and zero cents"
+        (h :. Nil, Full c) -> h ++ " dollars and " ++ digit3ToChar c ++ " cents"
+        (xs, Empty) ->
+          flatten
+            ( reverse
+                ( zipWith
+                    ( \a b ->
+                        if isEmpty a
+                          then ""
+                          else if isEmpty b then a ++ " " else a ++ " " ++ b ++ " "
+                    )
+                    xs
+                    illion
+                )
+            )
+            ++ "dollars and zero cents"
+        (xs, Full c) ->
+          flatten
+            ( reverse
+                ( zipWith
+                    ( \a b ->
+                        if isEmpty a
+                          then ""
+                          else if isEmpty b then a ++ " " else a ++ " " ++ b ++ " "
+                    )
+                    xs
+                    illion
+                )
+            )
+            ++ "dollars and "
+            ++ digit3ToChar c
+            ++ " cents"
