@@ -384,7 +384,9 @@ distinctG as =
                       OptionalT
                         ( if a > 100
                             then log1 ("aborting > 100: " ++ show' a) Empty
-                            else (if even a then log1 ("even number: " ++ show' a) else pure) (Full (S.notMember a s, S.insert a s))
+                            else
+                              (if even a then log1 ("even number: " ++ show' a) else pure)
+                                (Full (S.notMember a s, S.insert a s))
                         )
                   )
             )
