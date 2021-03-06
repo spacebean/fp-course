@@ -97,7 +97,7 @@ printFiles ::
 printFiles (h :. t) =
   uncurry printFile h >> printFiles t
 printFiles _ =
-  pure ()
+  return ()
 
 -- Given a file name, return (file name and file contents).
 -- Use @readFile@.
@@ -106,7 +106,7 @@ getFile ::
   IO (FilePath, Chars)
 getFile fp =
   readFile fp >>= \cs ->
-    pure (fp, cs)
+    return (fp, cs)
 
 -- Given a list of file names, return list of (file name and file contents).
 -- Use @getFile@.

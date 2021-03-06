@@ -238,7 +238,9 @@ instance Applicative Parser where
     Parser a ->
     Parser b
   pf <*> pa =
-    pf >>= \f -> pa >>= \a -> pure (f a)
+    pf >>= \f ->
+      pa >>= \a ->
+        return $ f a
 
 -- | Return a parser that produces a character but fails if
 --
@@ -298,8 +300,6 @@ digit ::
   Parser Char
 digit =
   satisfy isDigit
-
---
 
 -- | Return a parser that produces a space character but fails if
 --
@@ -369,7 +369,7 @@ list ::
   Parser a ->
   Parser (List a)
 list pa =
-  list1 pa ||| pure Nil
+  list1 pa ||| return Nil
 
 -- | Return a parser that produces at least one value from the given parser then
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
@@ -390,7 +390,7 @@ list1 ::
 list1 pa =
   pa >>= \a ->
     list pa >>= \as ->
-      pure (a :. as)
+      return $ a :. as
 
 -- | Return a parser that produces one or more space characters
 -- (consuming until the first non-space) but fails if
@@ -492,7 +492,7 @@ ageParser ::
 ageParser =
   ( \k -> case read k of
       Empty -> constantParser (UnexpectedString k)
-      Full h -> pure h
+      Full h -> return h
   )
     =<< list1 digit
 
@@ -511,7 +511,7 @@ firstNameParser ::
 firstNameParser =
   upper >>= \c ->
     list lower >>= \cs ->
-      pure (c :. cs)
+      return $ c :. cs
 
 -- | Write a parser for Person.surname.
 --
@@ -536,7 +536,7 @@ surnameParser =
   upper >>= \c ->
     thisMany 5 lower >>= \cs1 ->
       list lower >>= \cs2 ->
-        pure (c :. cs1 ++ cs2)
+        return $ c :. cs1 ++ cs2
 
 -- | Write a parser for Person.smoker.
 --
@@ -556,7 +556,7 @@ smokerParser ::
   Parser Bool
 smokerParser =
   is 'y' ||| is 'n' >>= \c ->
-    if c == 'y' then pure True else pure False
+    if c == 'y' then return True else return False
 
 -- | Write part of a parser for Person#phoneBody.
 -- This parser will only produce a string of digits, dots or hyphens.
@@ -602,7 +602,7 @@ phoneParser ::
 phoneParser =
   digit >>= \d ->
     phoneBodyParser >>= \ds ->
-      is '#' >> pure (d :. ds)
+      is '#' >> return (d :. ds)
 
 -- | Write a parser for Person.
 --
@@ -665,7 +665,7 @@ personParser =
       spaces1 >> surnameParser >>= \sn ->
         spaces1 >> smokerParser >>= \s ->
           spaces1 >> phoneParser >>= \p ->
-            pure (Person a fn sn s p)
+            return $ Person a fn sn s p
 
 -- Make sure all the tests pass!
 

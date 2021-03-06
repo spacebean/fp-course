@@ -19,9 +19,7 @@ fastAnagrams ::
 fastAnagrams cs fp =
   (\str -> let s = S.fromList (hlist (lines str)) in filter (`S.member` s) (permutations cs)) <$> readFile fp
 
-newtype NoCaseString = NoCaseString
-  { ncString :: Chars
-  }
+newtype NoCaseString = NoCaseString {ncString :: Chars}
 
 instance Eq NoCaseString where
   (==) = (==) `on` map toLower . ncString

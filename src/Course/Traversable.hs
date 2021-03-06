@@ -57,7 +57,7 @@ instance Traversable Optional where
   traverse f (Full a) =
     Full <$> f a
   traverse _ _ =
-    pure Empty
+    return Empty
 
 -- | Sequences a traversable value of structures to a structure of a traversable value.
 --

@@ -771,7 +771,7 @@ instance Traversable MaybeListZipper where
   traverse f (MLZ (Full lz)) =
     lift1 isZ (traverse f lz)
   traverse _ _ =
-    pure isNotZ
+    return isNotZ
 
 -----------------------
 -- SUPPORT LIBRARIES --

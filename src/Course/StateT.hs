@@ -77,7 +77,7 @@ instance Monad k => Applicative (StateT s k) where
            in kt >>= \t ->
                 let kt1 = g (snd t)
                  in kt1 >>= \t1 ->
-                      pure (fst t (fst t1), snd t1)
+                      return (fst t (fst t1), snd t1)
       )
 
 -- | Implement the `Monad` instance for @StateT s k@ given a @Monad k@.
@@ -275,7 +275,7 @@ instance Monad k => Applicative (OptionalT k) where
     OptionalT k a ->
     OptionalT k b
   (OptionalT kf) <*> (OptionalT ka) =
-    OptionalT (kf >>= \fo -> onFull (\t -> ka >>= \oa -> pure (t <$> oa)) fo)
+    OptionalT (kf >>= \fo -> onFull (\t -> ka >>= \oa -> return (t <$> oa)) fo)
 
 -- | Implement the `Monad` instance for `OptionalT k` given a Monad k.
 --
@@ -290,7 +290,7 @@ instance Monad k => Monad (OptionalT k) where
     OptionalT
       ( ko >>= \case
           Full a -> runOptionalT (f a)
-          _ -> pure Empty
+          _ -> return Empty
       )
 
 -- | A `Logger` is a pair of a list of log values (`[l]`) and an arbitrary value (`a`).
@@ -385,7 +385,7 @@ distinctG as =
                         ( if a > 100
                             then log1 ("aborting > 100: " ++ show' a) Empty
                             else
-                              (if even a then log1 ("even number: " ++ show' a) else pure)
+                              (if even a then log1 ("even number: " ++ show' a) else return)
                                 (Full (S.notMember a s, S.insert a s))
                         )
                   )
@@ -403,6 +403,6 @@ onFull ::
 onFull g o =
   case o of
     Empty ->
-      pure Empty
+      return Empty
     Full a ->
       g a
