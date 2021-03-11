@@ -262,7 +262,10 @@ satisfy f =
   P
     ( \cs -> case cs of
         Nil -> UnexpectedString cs
-        (h :. t) -> if f h then Result t h else UnexpectedChar h
+        (h :. t) ->
+          if f h
+            then Result t h
+            else UnexpectedChar h
     )
 
 -- | Return a parser that produces the given character but fails if
@@ -556,7 +559,9 @@ smokerParser ::
   Parser Bool
 smokerParser =
   is 'y' ||| is 'n' >>= \c ->
-    if c == 'y' then return True else return False
+    if c == 'y'
+      then return True
+      else return False
 
 -- | Write part of a parser for Person#phoneBody.
 -- This parser will only produce a string of digits, dots or hyphens.

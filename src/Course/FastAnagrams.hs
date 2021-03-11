@@ -17,7 +17,7 @@ fastAnagrams ::
   FilePath ->
   IO (List Chars)
 fastAnagrams cs fp =
-  (\str -> let s = S.fromList (hlist (lines str)) in filter (`S.member` s) (permutations cs)) <$> readFile fp
+  (\str -> filter (`S.member` (S.fromList . (hlist . lines)) str) (permutations cs)) <$> readFile fp
 
 newtype NoCaseString = NoCaseString {ncString :: Chars}
 

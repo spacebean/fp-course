@@ -103,8 +103,8 @@ instance Functor ((->) t) where
   a ->
   k b ->
   k a
-(<$) a =
-  (<$>) (P.const a)
+(<$) =
+  (<$>) . P.const
 
 -- | Anonymous map producing unit value.
 --

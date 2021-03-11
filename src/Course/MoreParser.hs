@@ -349,7 +349,12 @@ sepby pa ps =
 eof ::
   Parser ()
 eof =
-  P (\cs -> if isEmpty cs then Result Nil () else UnexpectedEof)
+  P
+    ( \cs ->
+        if isEmpty cs
+          then Result Nil ()
+          else UnexpectedEof
+    )
 
 -- | Write a parser that produces a character that satisfies all of the given predicates.
 --

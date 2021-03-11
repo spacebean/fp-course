@@ -41,7 +41,13 @@ instance Functor k => Functor (StateT s k) where
     StateT s k a ->
     StateT s k b
   f <$> (StateT g) =
-    StateT (\s -> (\t -> (f (fst t), snd t)) <$> g s)
+    StateT
+      ( \s ->
+          ( \t ->
+              (f (fst t), snd t)
+          )
+            <$> g s
+      )
 
 -- | Implement the `Applicative` instance for @StateT s k@ given a @Monad k@.
 --
@@ -94,7 +100,11 @@ instance Monad k => Monad (StateT s k) where
     StateT s k a ->
     StateT s k b
   f =<< (StateT g) =
-    StateT (\s -> g s >>= \t -> runStateT (f (fst t)) (snd t))
+    StateT
+      ( \s ->
+          g s >>= \t ->
+            runStateT (f (fst t)) (snd t)
+      )
 
 -- | A `State'` is `StateT` specialised to the `ExactlyOne` functor.
 type State' s a =
@@ -204,7 +214,17 @@ distinct' ::
   List a ->
   List a
 distinct' as =
-  eval (filtering (\a -> State (\s -> (S.notMember a s, S.insert a s))) as) S.empty
+  eval
+    ( filtering
+        ( \a ->
+            State
+              ( \s ->
+                  (a `S.notMember` s, a `S.insert` s)
+              )
+        )
+        as
+    )
+    S.empty
 
 -- | Remove all duplicate elements in a `List`.
 -- However, if you see a value greater than `100` in the list,
@@ -222,7 +242,19 @@ distinctF ::
   List a ->
   Optional (List a)
 distinctF as =
-  evalT (filtering (\a -> StateT (\s -> if a > 100 then Empty else Full (S.notMember a s, S.insert a s))) as) S.empty
+  evalT
+    ( filtering
+        ( \a ->
+            StateT
+              ( \s ->
+                  if a > 100
+                    then Empty
+                    else Full (a `S.notMember` s, a `S.insert` s)
+              )
+        )
+        as
+    )
+    S.empty
 
 -- | An `OptionalT` is a functor of an `Optional` value.
 newtype OptionalT k a = OptionalT {runOptionalT :: k (Optional a)}
@@ -275,7 +307,15 @@ instance Monad k => Applicative (OptionalT k) where
     OptionalT k a ->
     OptionalT k b
   (OptionalT kf) <*> (OptionalT ka) =
-    OptionalT (kf >>= \fo -> onFull (\t -> ka >>= \oa -> return (t <$> oa)) fo)
+    OptionalT
+      ( kf >>= \fo ->
+          onFull
+            ( \t ->
+                ka >>= \oa ->
+                  return (t <$> oa)
+            )
+            fo
+      )
 
 -- | Implement the `Monad` instance for `OptionalT k` given a Monad k.
 --

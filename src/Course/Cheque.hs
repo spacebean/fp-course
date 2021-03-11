@@ -460,7 +460,10 @@ dollars cs =
                     ( \a b ->
                         if isEmpty a
                           then ""
-                          else if isEmpty b then a ++ " " else a ++ " " ++ b ++ " "
+                          else
+                            if isEmpty b
+                              then a ++ " "
+                              else a ++ " " ++ b ++ " "
                     )
                     xs
                     illion
@@ -474,7 +477,10 @@ dollars cs =
                     ( \a b ->
                         if isEmpty a
                           then ""
-                          else if isEmpty b then a ++ " " else a ++ " " ++ b ++ " "
+                          else
+                            if isEmpty b
+                              then a ++ " "
+                              else a ++ " " ++ b ++ " "
                     )
                     xs
                     illion

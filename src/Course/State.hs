@@ -80,7 +80,11 @@ instance Functor (State s) where
     State s a ->
     State s b
   f <$> (State g) =
-    State (\s -> let t = g s in (f (fst t), snd t))
+    State
+      ( \s ->
+          let t = g s
+           in (f (fst t), snd t)
+      )
 
 -- | Implement the `Applicative` instance for `State s`.
 --
@@ -103,7 +107,12 @@ instance Applicative (State s) where
     State s a ->
     State s b
   (State f) <*> (State g) =
-    State (\s -> let t = f s in let t1 = g (snd t) in (fst t (fst t1), snd t1))
+    State
+      ( \s ->
+          let t = f s
+           in let t1 = g (snd t)
+               in (fst t (fst t1), snd t1)
+      )
 
 -- | Implement the `Monad` instance for `State s`.
 --
@@ -121,7 +130,11 @@ instance Monad (State s) where
     State s a ->
     State s b
   f =<< (State g) =
-    State (\s -> let t = g s in runState (f (fst t)) (snd t))
+    State
+      ( \s ->
+          let t = g s
+           in runState (f (fst t)) (snd t)
+      )
 
 -- | Find the first element in a `List` that satisfies a given predicate.
 -- It is possible that no element is found, hence an `Optional` result.
@@ -144,7 +157,9 @@ findM ::
   f (Optional a)
 findM f (h :. t) =
   f h >>= \b ->
-    if b then pure (Full h) else findM f t
+    if b
+      then pure (Full h)
+      else findM f t
 findM _ _ =
   pure Empty
 
@@ -162,7 +177,17 @@ firstRepeat ::
   List a ->
   Optional a
 firstRepeat as =
-  eval (findM (\a -> State (\s -> (S.member a s, S.insert a s))) as) S.empty
+  eval
+    ( findM
+        ( \a ->
+            State
+              ( \s ->
+                  (a `S.member` s, a `S.insert` s)
+              )
+        )
+        as
+    )
+    S.empty
 
 -- | Remove all duplicate elements in a `List`.
 -- /Tip:/ Use `filtering` and `State` with a @Data.Set#Set@.
@@ -175,7 +200,17 @@ distinct ::
   List a ->
   List a
 distinct as =
-  eval (filtering (\a -> State (\s -> (S.notMember a s, S.insert a s))) as) S.empty
+  eval
+    ( filtering
+        ( \a ->
+            State
+              ( \s ->
+                  (a `S.notMember` s, a `S.insert` s)
+              )
+        )
+        as
+    )
+    S.empty
 
 -- | A happy number is a positive integer, where the sum of the square
 -- of its digits eventually reaches 1 after repetition.

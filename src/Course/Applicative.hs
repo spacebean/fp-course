@@ -385,7 +385,18 @@ filtering ::
   List a ->
   k (List a)
 filtering f =
-  foldLeft (\kas a -> lift2 (\as b -> if b then as ++ (a :. Nil) else as) kas (f a)) (pure Nil)
+  foldLeft
+    ( \kas a ->
+        lift2
+          ( \as b ->
+              if b
+                then as ++ (a :. Nil)
+                else as
+          )
+          kas
+          (f a)
+    )
+    (pure Nil)
 
 -----------------------
 -- SUPPORT LIBRARIES --

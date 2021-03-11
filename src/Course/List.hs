@@ -161,7 +161,9 @@ filter ::
   List a ->
   List a
 filter f (h :. t) =
-  if f h then h :. filter f t else filter f t
+  if f h
+    then h :. filter f t
+    else filter f t
 filter _ _ =
   Nil
 
@@ -287,7 +289,9 @@ find ::
   List a ->
   Optional a
 find f (h :. t) =
-  if f h then Full h else find f t
+  if f h
+    then Full h
+    else find f t
 find _ _ =
   Empty
 

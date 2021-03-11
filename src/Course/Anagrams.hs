@@ -31,12 +31,12 @@ anagrams ::
   FilePath ->
   IO (List Chars)
 anagrams cs fp =
-  (\s -> intersectBy equalIgnoringCase (lines s) (permutations cs)) <$> readFile fp
+  intersectBy equalIgnoringCase (permutations cs) . lines <$> readFile fp
 
 -- Compare two strings for equality, ignoring case
 equalIgnoringCase ::
   Chars ->
   Chars ->
   Bool
-equalIgnoringCase cs1 cs2 =
-  and (uncurry (==) <$> zipWith (\c1 c2 -> (toLower c1, toLower c2)) cs1 cs2)
+equalIgnoringCase =
+  on (==) (toLower <$>)

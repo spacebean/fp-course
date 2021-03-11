@@ -72,7 +72,10 @@ isNotZ = MLZ Empty
 -- [4,3,2] >5< [6,7,8]
 instance Functor ListZipper where
   f <$> (ListZipper ls m rs) =
-    ListZipper (f <$> ls) (f m) (f <$> rs)
+    ListZipper
+      (f <$> ls)
+      (f m)
+      (f <$> rs)
 
 -- | Implement the `Functor` instance for `MaybeListZipper`.
 --
@@ -207,8 +210,8 @@ setFocus ::
   a ->
   ListZipper a ->
   ListZipper a
-setFocus a =
-  withFocus (P.const a)
+setFocus =
+  withFocus . P.const
 
 -- A flipped infix alias for `setFocus`. This allows:
 --
@@ -356,7 +359,9 @@ moveLeft ::
   ListZipper a ->
   MaybeListZipper a
 moveLeft lz =
-  if hasLeft lz then isZ (moveLeftLoop lz) else isNotZ
+  if hasLeft lz
+    then isZ (moveLeftLoop lz)
+    else isNotZ
 
 -- | Move the zipper one position to the right.
 --
@@ -369,7 +374,9 @@ moveRight ::
   ListZipper a ->
   MaybeListZipper a
 moveRight lz =
-  if hasRight lz then isZ (moveRightLoop lz) else isNotZ
+  if hasRight lz
+    then isZ (moveRightLoop lz)
+    else isNotZ
 
 -- | Swap the current focus with the value to the left of focus.
 --
@@ -504,7 +511,10 @@ moveLeftN' ::
 moveLeftN' n lz =
   case moveLeftN n lz of
     MLZ (Full x) -> Right x
-    _ -> if n > 0 then Left (length (lefts lz)) else Left (length (rights lz))
+    _ ->
+      if n > 0
+        then Left (length (lefts lz))
+        else Left (length (rights lz))
 
 -- | Move the focus right the given number of positions. If the value is negative, move left instead.
 -- If the focus cannot be moved, the given number of times, return the value by which it can be moved instead.
@@ -530,7 +540,10 @@ moveRightN' ::
 moveRightN' n lz =
   case moveRightN n lz of
     MLZ (Full x) -> Right x
-    _ -> if n > 0 then Left (length (rights lz)) else Left (length (lefts lz))
+    _ ->
+      if n > 0
+        then Left (length (rights lz))
+        else Left (length (lefts lz))
 
 -- | Move the focus to the given absolute position in the zipper. Traverse the zipper only to the extent required.
 --
@@ -672,7 +685,10 @@ instance Applicative ListZipper where
 
   -- /Tip:/ Use `zipWith`
   (ListZipper lfs f rfs) <*> (ListZipper las a ras) =
-    ListZipper (zipWith (\x y -> x y) lfs las) (f a) (zipWith (\x y -> x y) rfs ras)
+    ListZipper
+      (zipWith (\x y -> x y) lfs las)
+      (f a)
+      (zipWith (\x y -> x y) rfs ras)
 
 -- | Implement the `Applicative` instance for `MaybeListZipper`.
 --
