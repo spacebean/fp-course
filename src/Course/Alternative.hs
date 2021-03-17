@@ -65,12 +65,10 @@ instance Alternative Optional where
     Optional a ->
     Optional a ->
     Optional a
-  (Full a) <|> _ =
-    Full a
-  _ <|> (Full a) =
-    Full a
-  _ <|> _ =
-    zero
+  Empty <|> r =
+    r
+  r <|> _ =
+    r
 
 -- | Append the lists.
 -- This instance views lists as a non-deterministic choice between elements,
