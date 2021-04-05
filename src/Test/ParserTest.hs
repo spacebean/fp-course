@@ -159,9 +159,9 @@ applicativeTest =
       testCase "pure an Optional value" $
         parse (pure (Full 5) :: Parser (Optional Int)) "xyz" @?= Result "xyz" (Full 5),
       testCase "pure toUpper <*>" $
-        parse (pure toUpper <*> valueParser 'a') "xyz" @?= Result "xyz" 'A',
+        parse (toUpper <$> valueParser 'a') "xyz" @?= Result "xyz" 'A',
       testCase "pure show <*>" $
-        parse (pure show <*> valueParser 599) "xyz" @?= Result "xyz" "599",
+        parse (show <$> valueParser 599) "xyz" @?= Result "xyz" "599",
       testCase "append character <*>" $
         parse (((\a b -> a :. b :. Nil) <$> character) <*> character) "abxyz" @?= Result "xyz" "ab"
     ]
@@ -184,7 +184,7 @@ digitTest =
         isErrorResult $ parse digit "",
       assertBool "is error when character not digit" $
         isErrorResult $ parse digit "ABC",
-      testCase "succeeds when character is a digit  " $
+      testCase "succeeds when character is a digit" $
         parse digit "1BC" @?= Result "BC" '1'
     ]
 

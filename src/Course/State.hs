@@ -109,9 +109,9 @@ instance Applicative (State s) where
   (State f) <*> (State g) =
     State
       ( \s ->
-          let t = f s
-           in let t1 = g (snd t)
-               in (fst t (fst t1), snd t1)
+          let x = f s
+           in let y = g (snd x)
+               in (fst x (fst y), snd y)
       )
 
 -- | Implement the `Monad` instance for `State s`.
@@ -132,8 +132,8 @@ instance Monad (State s) where
   f =<< (State g) =
     State
       ( \s ->
-          let t = g s
-           in runState (f (fst t)) (snd t)
+          let x = g s
+           in runState (f (fst x)) (snd x)
       )
 
 -- | Find the first element in a `List` that satisfies a given predicate.

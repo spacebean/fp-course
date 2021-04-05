@@ -13,7 +13,7 @@ import Course.Monad
 import Course.Optional
 import Course.Parser
 import Course.Traversable
-import Numeric hiding (readHex)
+import Numeric hiding (readHex, isHexDigit)
 
 -- $setup
 -- >>> :set -XOverloadedStrings
@@ -242,8 +242,8 @@ betweenCharTok ::
   Char ->
   Parser a ->
   Parser a
-betweenCharTok c1 c2 =
-  between (charTok c1) (charTok c2)
+betweenCharTok x y =
+  between (charTok x) (charTok y)
 
 -- | Write a function that parses 4 hex digits and return the character value.
 --
@@ -436,5 +436,5 @@ betweenSepbyComma ::
   Char ->
   Parser a ->
   Parser (List a)
-betweenSepbyComma c1 c2 pa =
-  betweenCharTok c1 c2 (sepby pa (charTok ','))
+betweenSepbyComma x y pa =
+  betweenCharTok x y (sepby pa (charTok ','))

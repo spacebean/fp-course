@@ -260,12 +260,9 @@ satisfy ::
   Parser Char
 satisfy f =
   P
-    ( \cs -> case cs of
-        Nil -> UnexpectedString cs
-        (h :. t) ->
-          if f h
-            then Result t h
-            else UnexpectedChar h
+    ( \case
+        (h :. t) -> if f h then Result t h else UnexpectedChar h
+        _ -> UnexpectedEof
     )
 
 -- | Return a parser that produces the given character but fails if
