@@ -4,3 +4,4 @@ packages:
 
 ghc-options:
   "$locals": -dynamic
+  '$everything': -haddock
