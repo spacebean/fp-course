@@ -13,7 +13,7 @@ import Course.Monad
 import Course.Optional
 import Course.Parser
 import Course.Traversable
-import Numeric hiding (readHex, isHexDigit)
+import Numeric hiding (readHex)
 
 -- $setup
 -- >>> :set -XOverloadedStrings

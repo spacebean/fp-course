@@ -725,5 +725,3 @@ instance A.Applicative List where
 instance P.Monad List where
   (>>=) =
     flip flatMap
-  return =
-    (:. Nil)

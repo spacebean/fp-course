@@ -48,9 +48,9 @@ sized f = Gen $ \size gen -> runGen (f $ fromIntegral size) size gen
 frequency :: [(Int, Gen a)] -> Gen a
 frequency xs =
   let tot = sum (fst <$> xs)
-      pick n ((k, x) : xs)
+      pick n ((k, x) : ys)
         | n <= k = x
-        | otherwise = pick (n - k) xs
+        | otherwise = pick (n - k) ys
    in choose (1, tot) >>= (`pick` xs)
 
 vector :: Arbitrary a => Int -> Gen [a]
