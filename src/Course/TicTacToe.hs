@@ -69,27 +69,27 @@ assignCell :: String -> Move -> [Cell] -> CellTransform
 assignCell location move board =
   case getBoardIndex location >>= verifyIsFree board of
     Nothing -> Fail "Invalid move" board
-    Just i -> Success ((take i board) ++ [Occupied move] ++ (drop (i + 1) board))
+    Just i -> Success (take i board ++ [Occupied move] ++ drop (i + 1) board)
 
 isThereAWinner :: Move -> [Cell] -> Bool
 isThereAWinner move board =
   or
     [ -- check top row
-      board !! 0 == (Occupied move) && board !! 1 == (Occupied move) && board !! 2 == (Occupied move),
+      head board == Occupied move && board !! 1 == Occupied move && board !! 2 == Occupied move,
       -- check middle row
-      board !! 3 == (Occupied move) && board !! 4 == (Occupied move) && board !! 5 == (Occupied move),
+      board !! 3 == Occupied move && board !! 4 == Occupied move && board !! 5 == Occupied move,
       -- check bottom row
-      board !! 6 == (Occupied move) && board !! 7 == (Occupied move) && board !! 8 == (Occupied move),
+      board !! 6 == Occupied move && board !! 7 == Occupied move && board !! 8 == Occupied move,
       -- check left column
-      board !! 0 == (Occupied move) && board !! 3 == (Occupied move) && board !! 6 == (Occupied move),
+      head board == Occupied move && board !! 3 == Occupied move && board !! 6 == Occupied move,
       -- check middle column
-      board !! 1 == (Occupied move) && board !! 4 == (Occupied move) && board !! 7 == (Occupied move),
+      board !! 1 == Occupied move && board !! 4 == Occupied move && board !! 7 == Occupied move,
       -- check right column
-      board !! 2 == (Occupied move) && board !! 5 == (Occupied move) && board !! 8 == (Occupied move),
+      board !! 2 == Occupied move && board !! 5 == Occupied move && board !! 8 == Occupied move,
       -- check top left -> bottom right
-      board !! 0 == (Occupied move) && board !! 4 == (Occupied move) && board !! 8 == (Occupied move),
+      head board == Occupied move && board !! 4 == Occupied move && board !! 8 == Occupied move,
       -- check bottom left -> top right
-      board !! 6 == (Occupied move) && board !! 4 == (Occupied move) && board !! 2 == (Occupied move)
+      board !! 6 == Occupied move && board !! 4 == Occupied move && board !! 2 == Occupied move
     ]
 
 nextMove :: Move -> Move
@@ -98,8 +98,8 @@ nextMove O = X
 
 playRound :: Move -> [Cell] -> IO ()
 playRound move board = do
-  putStrLn $ (show move) ++ " 's turn."
-  putStrLn $ "Pick a cell from A1 to C3."
+  putStrLn $ show move ++ " 's turn."
+  putStrLn "Pick a cell from A1 to C3."
   renderBoard board
   putStr "\nInput: "
   cell <- getLine
@@ -110,13 +110,13 @@ playRound move board = do
     Success newBoard -> do
       if isThereAWinner move newBoard
         then do
-          putStrLn $ ("Winner! " ++ (show move) ++ " has won!")
+          putStrLn ("Winner! " ++ show move ++ " has won!")
           renderBoard newBoard
-          return ()
+          pure ()
         else playRound (nextMove move) newBoard
 
 main :: IO ()
 main = do
-  putStrLn $ "The game is beginning."
+  putStrLn "The game is beginning."
   let newBoard = replicate 9 Empty
   playRound X newBoard

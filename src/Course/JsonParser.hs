@@ -135,13 +135,13 @@ jsonString =
                     if c2 == 'u'
                       then hex
                       else case toSpecialCharacter c2 of
-                        Full sc -> return $ fromSpecialCharacter sc
+                        Full sc -> pure $ fromSpecialCharacter sc
                         _ -> unexpectedCharParser c2
                 )
               else
                 ( if c1 == '"'
                     then unexpectedCharParser c1
-                    else return c1
+                    else pure c1
                 )
         )
    in between (is '"') (charTok '"') (list1 cs)
@@ -274,7 +274,7 @@ jsonObject =
     '}'
     ( jsonString >>= \s ->
         charTok ':' >> jsonValue >>= \v ->
-          return (s, v)
+          pure (s, v)
     )
 
 -- | Parse a JSON value.
@@ -310,4 +310,4 @@ readJsonValue ::
   IO (ParseResult JsonValue)
 readJsonValue fp =
   readFile fp >>= \cs ->
-    return $ parse jsonValue cs
+    pure $ parse jsonValue cs

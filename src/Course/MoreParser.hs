@@ -58,7 +58,7 @@ tok ::
   Parser a
 tok pa =
   pa >>= \a ->
-    spaces >> return a
+    spaces >> pure a
 
 -- | Write a function that parses the given char followed by 0 or more spaces.
 --
@@ -220,7 +220,7 @@ between ::
 between po pc pa =
   po
     >> pa >>= \a ->
-      pc >> return a
+      pc >> pure a
 
 -- | Write a function that applies the given parser in between the two given characters.
 --
@@ -265,7 +265,7 @@ hex ::
 hex =
   replicateA 4 (satisfy isHexDigit) >>= \cs ->
     case readHex cs of
-      Full x -> return $ chr x
+      Full x -> pure $ chr x
       _ -> P (\_ -> UnexpectedString cs)
 
 -- | Write a function that parses the character 'u' followed by 4 hex digits and return the character value.
@@ -314,7 +314,7 @@ sepby1 ::
 sepby1 pa ps =
   pa >>= \a ->
     list (ps >> pa) >>= \as ->
-      return $ a :. as
+      pure $ a :. as
 
 -- | Write a function that produces a list of values coming off the given parser,
 -- separated by the second given parser.

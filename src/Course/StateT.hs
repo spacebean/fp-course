@@ -16,7 +16,7 @@ import Course.Monad
 import Course.Optional
 import Course.State
 import qualified Data.Set as S
-import qualified Prelude as P
+import qualified Prelude as P (pure)
 
 -- $setup
 -- >>> import Test.QuickCheck
@@ -83,7 +83,7 @@ instance Monad k => Applicative (StateT s k) where
            in kt >>= \t ->
                 let kt1 = g (snd t)
                  in kt1 >>= \t1 ->
-                      return (fst t (fst t1), snd t1)
+                      pure (fst t (fst t1), snd t1)
       )
 
 -- | Implement the `Monad` instance for @StateT s k@ given a @Monad k@.
@@ -312,7 +312,7 @@ instance Monad k => Applicative (OptionalT k) where
           onFull
             ( \t ->
                 ka >>= \oa ->
-                  return (t <$> oa)
+                  pure (t <$> oa)
             )
             fo
       )
@@ -330,7 +330,7 @@ instance Monad k => Monad (OptionalT k) where
     OptionalT
       ( ko >>= \case
           Full a -> runOptionalT (f a)
-          _ -> return Empty
+          _ -> pure Empty
       )
 
 -- | A `Logger` is a pair of a list of log values (`[l]`) and an arbitrary value (`a`).
@@ -425,7 +425,7 @@ distinctG as =
                         ( if a > 100
                             then log1 ("aborting > 100: " ++ show' a) Empty
                             else
-                              (if even a then log1 ("even number: " ++ show' a) else return)
+                              (if even a then log1 ("even number: " ++ show' a) else pure)
                                 (Full (S.notMember a s, S.insert a s))
                         )
                   )
@@ -443,6 +443,6 @@ onFull ::
 onFull g o =
   case o of
     Empty ->
-      return Empty
+      pure Empty
     Full a ->
       g a

@@ -27,8 +27,10 @@ fullOr ::
   a
   -> Optional a
   -> a
-fullOr =
-  error "todo: Course.Optional#fullOr"
+fullOr a Empty =
+  a
+fullOr _ (Full b) =
+  b
 
 -- | Map the given function on the possible value.
 --

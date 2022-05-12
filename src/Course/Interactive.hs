@@ -41,7 +41,7 @@ untilM p a =
   a >>= \r ->
     p r >>= \q ->
       if q
-        then return r
+        then pure r
         else untilM p a
 
 -- | Example program that uses IO to echo back characters that are entered by the user.
@@ -54,14 +54,14 @@ echo =
             if c == 'q'
               then
                 putStrLn "Bye!"
-                  >- return True
-              else return False
+                  >- pure True
+              else pure False
         )
         ( putStr "Enter a character: "
             >- getChar >>= \c ->
               putStrLn ""
                 >- putStrLn (c :. Nil)
-                >- return c
+                >- pure c
         )
     )
 
@@ -175,8 +175,8 @@ interactive =
                 if c == 'q'
                   then
                     putStrLn "Bye!"
-                      >- return True
-                  else return False
+                      >- pure True
+                  else pure False
             )
             ( putStrLn "Select: "
                 >- traverse

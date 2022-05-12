@@ -11,7 +11,7 @@ import Course.Functor
 import Course.List
 import Course.Optional
 import Course.Parser
-import qualified Prelude as P (fmap, return, (>>=))
+import qualified Prelude as P (fmap, (>>=))
 
 -- | All instances of the `Alternative` type-class must satisfy three laws.
 -- These laws are not checked by the compiler. These laws are given as:
@@ -149,7 +149,7 @@ instance Alternative Parser where
 -- Result >< ""
 many :: Alternative k => k a -> k (List a)
 many ka =
-  some ka <|> return Nil
+  some ka <|> pure Nil
 
 -- | Run the provided Alternative action one or more times, collecting
 -- a list of the results.

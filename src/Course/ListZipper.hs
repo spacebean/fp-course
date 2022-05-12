@@ -23,7 +23,7 @@ import qualified Prelude as P
 -- >>> instance Arbitrary a => Arbitrary (List a)
 -- where arbitrary = P.fmap (P.foldr (:.) Nil :: ([a] -> List a)) arbitrary
 -- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary =
--- do l <- arbitrary; x <- arbitrary; r <- arbitrary; P.return (ListZipper l x r)
+-- do l <- arbitrary; x <- arbitrary; r <- arbitrary; P.pure (ListZipper l x r)
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
 --
@@ -772,7 +772,7 @@ instance Comonad ListZipper where
 -- Empty
 instance Traversable ListZipper where
   traverse f (ListZipper ls m rs) =
-    lift3 ListZipper (traverse f ls) (f m) (traverse f rs)
+    ListZipper . reverse <$> traverse f (reverse ls) <*> f m <*> traverse f rs
 
 -- | Implement the `Traversable` instance for `MaybeListZipper`.
 --
@@ -787,7 +787,7 @@ instance Traversable MaybeListZipper where
   traverse f (MLZ (Full lz)) =
     lift1 isZ (traverse f lz)
   traverse _ _ =
-    return isNotZ
+    pure isNotZ
 
 -----------------------
 -- SUPPORT LIBRARIES --

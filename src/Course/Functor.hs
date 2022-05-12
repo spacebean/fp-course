@@ -30,7 +30,7 @@ infixl 4 <$>
 -- $setup
 -- >>> :set -XOverloadedStrings
 -- >>> import Course.Core
--- >>> import qualified Prelude as P(return, (>>))
+-- >>> import qualified Prelude as P(pure, (>>))
 
 -- | Maps a function on the ExactlyOne functor.
 --
@@ -159,7 +159,7 @@ void =
 
 -- | Maps a function on an IO program.
 --
--- >>> reverse <$> (putStr "hi" P.>> P.return ("abc" :: List Char))
+-- >>> reverse <$> (putStr "hi" P.>> P.pure ("abc" :: List Char))
 -- hi"cba"
 instance Functor IO where
   (<$>) =

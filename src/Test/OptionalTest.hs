@@ -23,7 +23,6 @@ import Course.Optional
     mapOptional,
     optional,
     (<+>),
-    (??),
   )
 import Test.Framework (TestTree, test, testCase, testGroup, (@?=))
 

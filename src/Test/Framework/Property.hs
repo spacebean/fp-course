@@ -92,7 +92,7 @@ instance Arbitrary Bool where
   arbitrary = elements [True, False]
 
 instance Arbitrary Char where
-  arbitrary = choose (32, 255) >>= \n -> return (chr n)
+  arbitrary = choose (32, 255) >>= \n -> pure (chr n)
 
 instance Arbitrary Int where
   arbitrary = sized $ \size -> choose (- size, size)
