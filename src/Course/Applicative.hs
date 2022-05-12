@@ -404,16 +404,9 @@ filtering f =
 
 instance Applicative IO where
   pure =
-    P.return
+    P.pure
   f <*> a =
     f P.>>= \f' -> P.fmap f' a
-
-return ::
-  Applicative k =>
-  a ->
-  k a
-return =
-  pure
 
 fail ::
   Applicative k =>

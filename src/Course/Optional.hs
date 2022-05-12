@@ -16,6 +16,20 @@ data Optional a
   | Empty
   deriving (Eq, Show)
 
+-- | Return the possible value if it exists; otherwise, the first argument.
+--
+-- >>> fullOr 99 (Full 8)
+-- 8
+--
+-- >>> fullOr 99 Empty
+-- 99
+fullOr ::
+  a
+  -> Optional a
+  -> a
+fullOr =
+  error "todo: Course.Optional#fullOr"
+
 -- | Map the given function on the possible value.
 --
 -- >>> mapOptional (+1) Empty
@@ -50,22 +64,6 @@ bindOptional f (Full a) =
   f a
 bindOptional _ _ =
   Empty
-
--- | Return the possible value if it exists; otherwise, the second argument.
---
--- >>> Full 8 ?? 99
--- 8
---
--- >>> Empty ?? 99
--- 99
-(??) ::
-  Optional a ->
-  a ->
-  a
-(Full a) ?? _ =
-  a
-_ ?? a =
-  a
 
 -- | Try the first optional for a value. If it has a value, use it; otherwise,
 -- use the second value.

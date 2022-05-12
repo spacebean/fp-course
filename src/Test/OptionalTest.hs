@@ -7,7 +7,7 @@ module Test.OptionalTest
     test_Optional,
     mapOptionalTest,
     bindOptionalTest,
-    valueOrTest,
+    fullOrTest,
     firstFullTest,
 
     -- * Runner
@@ -19,6 +19,7 @@ import Course.Core
 import Course.Optional
   ( Optional (..),
     bindOptional,
+    fullOr,
     mapOptional,
     optional,
     (<+>),
@@ -32,7 +33,7 @@ test_Optional =
     "Optional"
     [ mapOptionalTest,
       bindOptionalTest,
-      valueOrTest,
+      fullOrTest,
       firstFullTest,
       optionalTest
     ]
@@ -60,15 +61,14 @@ bindOptionalTest =
             bindOptional evenDecOddInc (Full 9) @?= Full 10
         ]
 
-valueOrTest :: TestTree
-valueOrTest =
-  testGroup
-    "??"
-    [ testCase "Full" $
-        Full 8 ?? 99 @?= 8,
-      testCase "Empty" $
-        Empty ?? 99 @?= 99
-    ]
+fullOrTest :: TestTree
+fullOrTest =
+  testGroup "fullOr" [
+    testCase "Full" $
+      fullOr 99 (Full 8) @?= 8
+  , testCase "Empty" $
+      fullOr 99 Empty @?= 99
+  ]
 
 firstFullTest :: TestTree
 firstFullTest =
